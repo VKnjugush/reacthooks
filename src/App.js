@@ -2,9 +2,11 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 import { Container, Navbar, Button } from 'react-bootstrap';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MovieList from './MovieList';
 import Filter from './Filter';
 import AddMovie from './AddMovie';
+import MovieDescription from './MovieDescription'; // Create this component
 import './App.css'; // You can add custom styles here
 
 // Initial movie data (can be moved to a separate file)
@@ -15,6 +17,7 @@ const initialMoviesData = [
     description: 'A thief who steals information by entering people\'s dreams...',
     posterURL: 'https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg',
     rating: 4.8,
+    trailer: 'https://www.youtube.com/embed/YoHD9XEInc0'
   },
   {
     id: 2,
@@ -22,6 +25,7 @@ const initialMoviesData = [
     description: 'When the menace known as the Joker wreaks havoc...',
     posterURL: 'https://m.media-amazon.com/images/M/MV5BMTMxNTMwODM0NF5BMl5BanBnXkFtZTcwODAyMTk2Mw@@._V1_SX300.jpg',
     rating: 4.9,
+    trailer: 'https://www.youtube.com/embed/EXeTwQWrcwY'
   },
   {
     id: 3,
@@ -29,6 +33,7 @@ const initialMoviesData = [
     description: 'A team of explorers travel through a wormhole in space...',
     posterURL: 'https://m.media-amazon.com/images/M/MV5BZjdkOTU3MDktN2IxOS00OGEyLWFmMjktY2FiMmZkNWIyODZiXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_SX300.jpg',
     rating: 4.7,
+    trailer: 'https://www.youtube.com/embed/zSW64RsX1sA'
   },
   {
     id: 4,
@@ -36,6 +41,7 @@ const initialMoviesData = [
     description: 'Greed and class discrimination threaten the newly formed symbiotic relationship...',
     posterURL: 'https://m.media-amazon.com/images/M/MV5BYWZjMjk3ZTItODQ2ZC00NTY5LWE0ZTUtZTI4YOTY4NTU5MTBiXkEyXkFqcGdeQXVyODE5NzE3OTE@._V1_SX300.jpg',
     rating: 4.6,
+    trailer: 'https://www.youtube.com/embed/5x8d-8j6j6A'
   },
   {
     id: 5,
@@ -43,6 +49,7 @@ const initialMoviesData = [
     description: 'During her family\'s move to the suburbs, a sullen 10-year-old girl wanders into a world ruled by gods, witches, and spirits...',
     posterURL: 'https://m.media-amazon.com/images/M/MV5BMjlmZmI5MDctNDE2YS00YWE0LWE5ZWItZDBhYWQ0NTcxNWRhXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_SX300.jpg',
     rating: 4.7,
+    trailer: 'https://www.youtube.com/embed/ByXuk9QqQmA'
   }
 ];
 
@@ -94,36 +101,51 @@ function App() {
   const handleCloseAddModal = () => setShowAddModal(false);
 
   return (
-    <div className="App">
-      <Navbar bg="dark" variant="dark" expand="lg" className="mb-4">
-        <Container>
-          <Navbar.Brand href="#home">My Movie App</Navbar.Brand>
-          <Button variant="outline-light" onClick={handleShowAddModal}>
-            Add New Movie
-          </Button>
-        </Container>
-      </Navbar>
+    <Router>
+      <div className="App">
+        <Navbar bg="dark" variant="dark" expand="lg" className="mb-4">
+          <Container>
+            <Navbar.Brand href="#home">My Movie App</Navbar.Brand>
+            <Button variant="outline-light" onClick={handleShowAddModal}>
+              Add New Movie
+            </Button>
+          </Container>
+        </Navbar>
 
-      <Container>
-        <Filter
-          onTitleChange={handleTitleChange}
-          onRateChange={handleRateChange}
-          currentTitle={searchTerm}
-          currentRate={searchRating}
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                <Container>
+                  <Filter
+                    onTitleChange={handleTitleChange}
+                    onRateChange={handleRateChange}
+                    currentTitle={searchTerm}
+                    currentRate={searchRating}
+                  />
+                  <MovieList movies={filteredMovies} />
+                </Container>
+              </>
+            }
+          />
+          <Route
+            path="/movie/:id"
+            element={<MovieDescription movies={movies} />}
+          />
+        </Routes>
+
+        <AddMovie
+          show={showAddModal}
+          handleClose={handleCloseAddModal}
+          handleAddMovie={handleAddMovie}
         />
-        <MovieList movies={filteredMovies} />
-      </Container>
 
-      <AddMovie
-        show={showAddModal}
-        handleClose={handleCloseAddModal}
-        handleAddMovie={handleAddMovie}
-      />
-
-      <footer style={{ textAlign: 'center', marginTop: '30px', padding: '15px', color: '#666', borderTop: '1px solid #eee' }}>
-        <p>© 2024 Movie App Checkpoint</p>
-      </footer>
-    </div>
+        <footer style={{ textAlign: 'center', marginTop: '30px', padding: '15px', color: '#666', borderTop: '1px solid #eee' }}>
+          <p>© 2024 Movie App Checkpoint</p>
+        </footer>
+      </div>
+    </Router>
   );
 }
 
